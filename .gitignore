@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+*.egg
+
+# Node
+node_modules/
+frontend/dist/
+
+# Environment
+.env
+.env.local
+*.key
+*.pem
+credentials.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+.docker/
+
+# Database
+*.db
+*.sqlite3
+
+# Agent config (skills are committed, taste/settings are personal)
+.commandcode/taste/
+.commandcode/settings.local.json
+.claude/settings.json
+.claude/settings.local.json
+.claude/cache/
+
+# Personal notes
+todo.txt
+todo_human.txt
+
+# Design tool cache
+frontend/.hallmark/
+
+# Wednesday analysis artifacts (generated, not source)
+.wednesday/
+
+# OS junk
+Thumbs.db
+
