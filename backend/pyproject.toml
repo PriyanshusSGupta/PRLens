@@ -22,3 +22,11 @@ dependencies = [
 
 [dependency-groups]
 dev = []
+
+[build-system]
+requires = ["setuptools>=75.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+exclude = ["alembic", "alembic*"]
