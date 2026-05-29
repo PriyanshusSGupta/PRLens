@@ -35,12 +35,23 @@ Thumbs.db
 *.db
 *.sqlite3
 
-# Agent config (skills are committed, taste/settings are personal)
-.commandcode/taste/
-.commandcode/settings.local.json
-.claude/settings.json
-.claude/settings.local.json
-.claude/cache/
+# Agent config and skills (personal, not project source)
+.claude/
+.commandcode/
+CLAUDE.md
+
+# Planning docs (not project source)
+.planning/
+
+# Design docs (not project source)
+frontend/design.md
+docs/audit.md
+
+# CI workflows (not needed for Render deploy)
+.github/
+
+# Commit hooks config
+.commitlintrc.json
 
 # Personal notes
 todo.txt
