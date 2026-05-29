@@ -1,0 +1,2 @@
+httpx library is available for GitHub API calls.
+PyGithub is not included to keep dependency surface small.
