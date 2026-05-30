@@ -97,23 +97,20 @@ async def register(body: RegisterBody, db: AsyncSession = Depends(get_db)):
     user = User(
         email=body.email,
         hashed_password=await hash_password(body.password),
-        is_verified=settings.smtp_host == "console",
+        is_verified=False,
         auth_provider="email",
     )
     db.add(user)
     await db.flush()
 
-    if not user.is_verified:
-        otp = OTPCode(
-            email=body.email,
-            code=code,
-            expires_at=datetime.datetime.utcnow() + datetime.timedelta(minutes=OTP_EXPIRY_MINUTES),
-        )
-        db.add(otp)
+    otp = OTPCode(
+        email=body.email,
+        code=code,
+        expires_at=datetime.datetime.utcnow() + datetime.timedelta(minutes=OTP_EXPIRY_MINUTES),
+    )
+    db.add(otp)
     await db.commit()
 
-    if user.is_verified:
-        return {"message": "Registration successful.", "verified": True}
     await send_otp(body.email, code)
     return {"message": "Registration started. Check your email for a verification code."}
 
