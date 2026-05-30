@@ -7,7 +7,9 @@ _session_factory = None
 
 def _build_url(db_url: str) -> str:
     if db_url.startswith("postgresql://"):
-        return db_url.replace("postgresql://", "postgresql+asyncpg://")
+        url = db_url.replace("postgresql://", "postgresql+asyncpg://")
+        url = url.replace("?sslmode=require", "")
+        return url
     if db_url.startswith("sqlite:///"):
         return db_url.replace("sqlite:///", "sqlite+aiosqlite:///")
     return db_url
