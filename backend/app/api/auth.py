@@ -83,29 +83,37 @@ def _oauth_redirect(url: str, user_id: int) -> RedirectResponse:
 @router.post("/register")
 async def register(body: RegisterBody, db: AsyncSession = Depends(get_db)):
     existing = (await db.execute(select(User).where(User.email == body.email))).scalar_one_or_none()
-    if existing:
+    if existing and existing.is_verified:
         raise HTTPException(status_code=400, detail="Email already registered. Please log in instead.")
+    if existing and not existing.is_verified:
+        await db.execute(delete(OTPCode).where(OTPCode.email == body.email))
+        await db.delete(existing)
+        await db.flush()
     if len(body.password) < 8:
         raise HTTPException(status_code=400, detail="Password must be at least 8 characters.")
+
+    code = generate_otp()
 
     user = User(
         email=body.email,
         hashed_password=await hash_password(body.password),
-        is_verified=False,
+        is_verified=settings.smtp_host == "console",
         auth_provider="email",
     )
     db.add(user)
     await db.flush()
 
-    code = generate_otp()
-    otp = OTPCode(
-        email=body.email,
-        code=code,
-        expires_at=datetime.datetime.utcnow() + datetime.timedelta(minutes=OTP_EXPIRY_MINUTES),
-    )
-    db.add(otp)
+    if not user.is_verified:
+        otp = OTPCode(
+            email=body.email,
+            code=code,
+            expires_at=datetime.datetime.utcnow() + datetime.timedelta(minutes=OTP_EXPIRY_MINUTES),
+        )
+        db.add(otp)
     await db.commit()
 
+    if user.is_verified:
+        return {"message": "Registration successful.", "verified": True}
     await send_otp(body.email, code)
     return {"message": "Registration started. Check your email for a verification code."}
 
